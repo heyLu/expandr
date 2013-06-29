@@ -9,6 +9,7 @@ import Data.IORef
 import qualified Data.Map as M
 import qualified Data.Text.Lazy as T
 
+import Expandr.Core (isShortened)
 import Expandr.Cache (getCachedUnshortened)
 
 server :: IO Application
@@ -18,7 +19,7 @@ server = scottyApp $ do
         cache <- liftIO $ readIORef cacheRef
         url <- param "url"
         unshortened <- liftIO $ getCachedUnshortened cache url 5
-        when (not $ M.member url cache) . liftIO $ do
+        when (isShortened url && (not $ M.member url cache)) $ liftIO $ do
             putStrLn $ "cache insert: " ++ show (url, unshortened)
             modifyIORef cacheRef (M.insert url unshortened)
         text $ T.pack unshortened
