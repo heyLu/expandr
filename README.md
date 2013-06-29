@@ -17,9 +17,16 @@ you'd like to use a real version of this thing, use [one](http://longurl.com)
     $ ./dist/build/expandr/expandr
     # Visit 0.0.0.0:3000/help
 
-It's written in Haskell, so you need the Haskell Platform installed.
-Additionally you need the `scotty` and `aeson` packages. I'll try to
-cabalize this package soon so watch out for that.
+Alternatively, if you're developing this thing, the following might be
+faster:
+
+    # 1. Install the necessary dependencies
+    $ cabal install --only-dependencies
+    # 2. Build and run
+    $ make
+    $ ./expandr
+    # 3. Improve it, go to 2.
+    # 4. Use ghci/vim-hdevtools/whatever-makes-you-happy
 
 ## ToDo
 
