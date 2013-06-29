@@ -46,6 +46,7 @@ instance ToJSON ExpandedResult where
             "expandedUrl" .= url] ++
             map (\(k,v) -> TS.pack k .= v) (M.toList more)
 
+getUnshortened' :: IORef (M.Map String String) -> String -> ActionM String
 getUnshortened' cacheRef url = do
     cache <- liftIO $ readIORef cacheRef
     unshortened <- liftIO $ getCachedUnshortened cache url 5

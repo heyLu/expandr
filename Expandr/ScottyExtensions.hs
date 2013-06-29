@@ -2,7 +2,6 @@
 module Expandr.ScottyExtensions where
 
 import Web.Scotty
-import Control.Applicative ((<$>))
 import qualified Data.Text.Lazy as T
 
 safe :: ActionM a -> ActionM (Maybe a)
@@ -14,6 +13,7 @@ safe' whenNothing action = safe action >>= return . maybe whenNothing id
 param' :: (Parsable a) => T.Text -> ActionM (Maybe a)
 param' = safe . param
 
+reqHeader' :: T.Text -> ActionM (Maybe T.Text)
 reqHeader' = safe . reqHeader
 
 data ContentType = JSON | HTML | Plain
