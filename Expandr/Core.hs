@@ -6,18 +6,21 @@ import Data.Maybe (isJust, fromJust)
 
 shorteners = ["t.co", "bit.ly", "fb.me"]
 
-isShortened :: URI -> Bool
-isShortened uri = maybe False id $ do
+isShortened' :: URI -> Bool
+isShortened' uri = maybe False id $ do
     domain <- fmap uriRegName $ uriAuthority uri
     return $ domain `elem` shorteners
+
+fromMaybe = maybe False id
+
+isShortened :: String -> Bool
+isShortened url = fromMaybe $ parseURI url >>= return . isShortened'
 
 location :: Response a -> Maybe String
 location res = lookupHeader HdrLocation . getHeaders $ res
 
-fromMaybe = maybe False id
-
 getUnshortened url maxRedirect = do
-    if (fromMaybe $ parseURI url >>= return . isShortened) && maxRedirect > 0
+    if isShortened url && maxRedirect > 0
     then do
         res <- simpleHTTP $ getRequest url
         let loc = fmap location res
