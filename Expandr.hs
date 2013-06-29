@@ -1,5 +1,8 @@
+module Expandr where
+
 import Network.URI
 import Network.HTTP
+import Data.Maybe (isJust, fromJust)
 
 shorteners = ["t.co", "bit.ly", "fb.me"]
 
@@ -14,8 +17,12 @@ location res = lookupHeader HdrLocation . getHeaders $ res
 fromMaybe = maybe False id
 
 getUnshortened url maxRedirect = do
-    if fromMaybe $ parseURI url >>= return . isShortened
+    if (fromMaybe $ parseURI url >>= return . isShortened) && maxRedirect > 0
     then do
         res <- simpleHTTP $ getRequest url
-        return $ fmap location res
+        let loc = fmap location res
+        let loc' = either (Just . const url) id loc
+        if maxRedirect > 0 && isJust loc'
+        then getUnshortened (fromJust loc') (maxRedirect - 1)
+        else return $ fmap location res
     else return . Right . Just $ url
