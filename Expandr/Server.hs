@@ -4,7 +4,7 @@ module Expandr.Server where
 
 import Web.Scotty
 import Network.Wai
-import Data.Aeson
+import Data.Aeson hiding (json)
 import Control.Monad (when)
 import Control.Monad.IO.Class (liftIO)
 import Data.IORef
@@ -14,6 +14,7 @@ import qualified Data.Text.Lazy as T
 
 import Expandr.Core (isShortened)
 import Expandr.Cache (getCachedUnshortened)
+import Expandr.ScottyExtensions
 
 help :: T.Text
 help = T.concat [
@@ -58,6 +59,9 @@ server = scottyApp $ do
     cacheRef <- liftIO $ newIORef M.empty
     get "/" $ do
         url <- param "url"
-        text . T.pack =<< getUnshortened' cacheRef url
+        unshortened <- getUnshortened' cacheRef url
+        negotiate $ \t -> case t of
+            JSON -> json $ ExpandedResult url unshortened M.empty
+            _ -> text . T.pack $ unshortened
     get "/help" $ do
         text $ help
