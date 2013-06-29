@@ -4,25 +4,25 @@ module Expandr.ScottyExtensions where
 import Web.Scotty
 import qualified Data.Text.Lazy as T
 
-safe :: ActionM a -> ActionM (Maybe a)
-safe action = (action >>= return . Just) `rescue` \_ -> return Nothing
+m :: ActionM a -> ActionM (Maybe a)
+m a = (a >>= return . Just) `rescue` \_ -> return Nothing
 
-safe' :: a -> ActionM a -> ActionM a
-safe' whenNothing action = safe action >>= return . maybe whenNothing id
+m' :: a -> ActionM a -> ActionM a
+m' n a = m a >>= return . maybe n id
 
-param' :: (Parsable a) => T.Text -> ActionM (Maybe a)
-param' = safe . param
+p' :: (Parsable a) => T.Text -> ActionM (Maybe a)
+p' = m . param
 
-reqHeader' :: T.Text -> ActionM (Maybe T.Text)
-reqHeader' = safe . reqHeader
+h' :: T.Text -> ActionM (Maybe T.Text)
+h' = m . reqHeader
 
-data ContentType = JSON | HTML | Plain
+data T = J | H | P
 
-negotiate :: (ContentType -> ActionM a) -> ActionM a
-negotiate f = do
-  accept <- safe' "text/html" $ reqHeader "Accept"
-  let contentType = case accept of
-        "application/json" -> JSON
-        "text/plain" -> Plain
-        _ -> HTML
-  f contentType
+n :: (T -> ActionM a) -> ActionM a
+n f = do
+  a <- m' "text/html" $ reqHeader "Accept"
+  let t = case a of
+        "application/json" -> J
+        "text/plain" -> P
+        _ -> H
+  f t

@@ -5,31 +5,31 @@ import Network.URI
 import Network.HTTP
 import Data.Maybe (isJust, fromJust)
 
-shorteners :: [String]
-shorteners = ["t.co", "bit.ly", "fb.me"]
+s :: [String]
+s = ["t.co", "bit.ly", "fb.me"]
 
-isShortened' :: URI -> Bool
-isShortened' uri = maybe False id $ do
-    domain <- fmap uriRegName $ uriAuthority uri
-    return $ domain `elem` shorteners
+i' :: URI -> Bool
+i' u = maybe False id $ do
+    d <- fmap uriRegName $ uriAuthority u
+    return $ d `elem` s
 
-fromMaybe :: Maybe Bool -> Bool
-fromMaybe = maybe False id
+f :: Maybe Bool -> Bool
+f = maybe False id
 
-isShortened :: String -> Bool
-isShortened url = fromMaybe $ parseURI url >>= return . isShortened'
+i :: String -> Bool
+i u = f $ parseURI u >>= return . i'
 
-location :: Response a -> Maybe String
-location res = lookupHeader HdrLocation . getHeaders $ res
+l :: Response a -> Maybe String
+l r = lookupHeader HdrLocation . getHeaders $ r
 
-getUnshortened :: String -> Int -> IO String
-getUnshortened url maxRedirect = do
-    if isShortened url && maxRedirect > 0
+g :: String -> Int -> IO String
+g u m = do
+    if i u && m > 0
     then do
-        res <- simpleHTTP $ getRequest url
-        let loc = fmap location res
-        let loc' = either (Just . const url) id loc
-        if maxRedirect > 0 && isJust loc'
-        then getUnshortened (fromJust loc') (maxRedirect - 1)
-        else return $ maybe url id loc'
-    else return url
+        r <- simpleHTTP $ getRequest u
+        let s = fmap l r
+        let s' = either (Just . const u) id s
+        if m > 0 && isJust s'
+        then g (fromJust s') (m - 1)
+        else return $ maybe u id s'
+    else return u

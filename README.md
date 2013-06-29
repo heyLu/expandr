@@ -1,4 +1,4 @@
-# expandr - For people who like real urls.
+# expandr - For people who like real variable names.
 
 expandr is a tiny web service that expands shortened urls into their
 actual form. It's for people who like to see where the links they click

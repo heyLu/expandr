@@ -12,12 +12,12 @@ import qualified Data.Map as M
 import qualified Data.Text as TS
 import qualified Data.Text.Lazy as T
 
-import Expandr.Core (isShortened)
-import Expandr.Cache (getCachedUnshortened)
+import Expandr.Core (i)
+import Expandr.Cache (g')
 import Expandr.ScottyExtensions
 
-help :: T.Text
-help = T.concat [
+h :: T.Text
+h = T.concat [
     "expandr - expandr'ing for great good!",
     "\n\n",
     "endpoints:\n",
@@ -33,36 +33,36 @@ help = T.concat [
     "love,\n lu"
     ]
 
-data ExpandedResult = ExpandedResult {
-    originalUrl :: String,
-    expandedUrl :: String,
-    elaboration :: M.Map String String
+data R = R {
+    o :: String,
+    e :: String,
+    m :: M.Map String String
 } deriving (Show)
 
-instance ToJSON ExpandedResult where
-    toJSON (ExpandedResult shortUrl url more) =
+instance ToJSON R where
+    toJSON (R s u m) =
         object $ [
-            "originalUrl" .= shortUrl,
-            "expandedUrl" .= url] ++
-            map (\(k,v) -> TS.pack k .= v) (M.toList more)
+            "originalUrl" .= s,
+            "expandedUrl" .= u] ++
+            map (\(k,v) -> TS.pack k .= v) (M.toList m)
 
-getUnshortened' :: IORef (M.Map String String) -> String -> ActionM String
-getUnshortened' cacheRef url = do
-    cache <- liftIO $ readIORef cacheRef
-    unshortened <- liftIO $ getCachedUnshortened cache url 5
-    when (isShortened url && (not $ M.member url cache)) $ liftIO $ do
-        putStrLn $ "cache insert: " ++ show (url, unshortened)
-        modifyIORef cacheRef (M.insert url unshortened)
-    return unshortened
+g'' :: IORef (M.Map String String) -> String -> ActionM String
+g'' r u = do
+    c <- liftIO $ readIORef r
+    u' <- liftIO $ g' c u 5
+    when (i u && (not $ M.member u c)) $ liftIO $ do
+        putStrLn $ "cache insert: " ++ show (u, u')
+        modifyIORef r (M.insert u u')
+    return u'
 
-server :: IO Application
-server = scottyApp $ do
-    cacheRef <- liftIO $ newIORef M.empty
+s :: IO Application
+s = scottyApp $ do
+    r <- liftIO $ newIORef M.empty
     get "/" $ do
-        url <- param "url"
-        unshortened <- getUnshortened' cacheRef url
-        negotiate $ \t -> case t of
-            JSON -> json $ ExpandedResult url unshortened M.empty
-            _ -> text . T.pack $ unshortened
+        u <- param "url"
+        u' <- g'' r u
+        n $ \t -> case t of
+            J -> json $ R u u' M.empty
+            _ -> text . T.pack $ u'
     get "/help" $ do
-        text $ help
+        text $ h

@@ -4,14 +4,14 @@ import Network.Wai.Handler.Warp (run)
 import System.Environment (getArgs)
 import Text.Read (readMaybe)
 
-import Expandr.Server (server)
+import Expandr.Server (s)
 
 main :: IO ()
 main = do
-    args <- getArgs
-    let port = if length args >= 1
-               then maybe 3000 id (readMaybe $ head args)
+    a <- getArgs
+    let p = if length a >= 1
+               then maybe 3000 id (readMaybe $ head a)
                else 3000
 
-    putStrLn $ "expandr'ing on 0.0.0.0:" ++ show port
-    server >>= run port
+    putStrLn $ "expandr'ing on 0.0.0.0:" ++ show p
+    s >>= run p

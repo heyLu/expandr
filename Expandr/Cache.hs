@@ -8,18 +8,18 @@ import System.Directory (doesFileExist)
 
 import Expandr.Core
 
-getCachedUnshortened :: M.Map String String -> String -> Int -> IO String
-getCachedUnshortened cache url maxRedirects = do
-    case M.lookup url cache of
-        Just unshortenedUrl -> return unshortenedUrl
-        Nothing -> getUnshortened url maxRedirects
+g' :: M.Map String String -> String -> Int -> IO String
+g' c u m = do
+    case M.lookup u c of
+        Just u' -> return u'
+        Nothing -> g u m
 
-loadCache :: String -> IO (M.Map String String)
-loadCache fileName = do
-    fileExists <- doesFileExist fileName
-    if fileExists
-    then B.readFile fileName >>= return . maybe M.empty id . decode
+l :: String -> IO (M.Map String String)
+l f = do
+    e <- doesFileExist f
+    if e
+    then B.readFile f >>= return . maybe M.empty id . decode
     else return M.empty
 
-saveCache :: String -> M.Map String String -> IO ()
-saveCache fileName cache = B.writeFile fileName $ encode cache
+s :: String -> M.Map String String -> IO ()
+s f c = B.writeFile f $ encode c
