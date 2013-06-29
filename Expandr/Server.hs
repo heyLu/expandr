@@ -4,10 +4,12 @@ module Expandr.Server where
 
 import Web.Scotty
 import Network.Wai
+import Data.Aeson
 import Control.Monad (when)
 import Control.Monad.IO.Class (liftIO)
 import Data.IORef
 import qualified Data.Map as M
+import qualified Data.Text as TS
 import qualified Data.Text.Lazy as T
 
 import Expandr.Core (isShortened)
@@ -29,6 +31,19 @@ help = T.concat [
     "\n",
     "love,\n lu"
     ]
+
+data ExpandedResult = ExpandedResult {
+    originalUrl :: String,
+    expandedUrl :: String,
+    elaboration :: M.Map String String
+} deriving (Show)
+
+instance ToJSON ExpandedResult where
+    toJSON (ExpandedResult shortUrl url more) =
+        object $ [
+            "originalUrl" .= shortUrl,
+            "expandedUrl" .= url] ++
+            map (\(k,v) -> TS.pack k .= v) (M.toList more)
 
 server :: IO Application
 server = scottyApp $ do
