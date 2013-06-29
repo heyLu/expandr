@@ -24,5 +24,5 @@ getUnshortened url maxRedirect = do
         let loc' = either (Just . const url) id loc
         if maxRedirect > 0 && isJust loc'
         then getUnshortened (fromJust loc') (maxRedirect - 1)
-        else return $ fmap location res
-    else return . Right . Just $ url
+        else return $ maybe url id loc'
+    else return url
