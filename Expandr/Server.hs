@@ -12,6 +12,22 @@ import qualified Data.Text.Lazy as T
 import Expandr.Core (isShortened)
 import Expandr.Cache (getCachedUnshortened)
 
+help = T.concat [
+    "expandr - expandr'ing for great good!",
+    "\n\n",
+    "endpoints:\n",
+    "/{?url} - expand the given url\n",
+    "\texpands if url is a shortened one, otherwise just returns the given url\n",
+    "/help - documentation\n",
+    "\n",
+    "misc\n",
+    "- why? because the world needs it, SCIENCE!\n",
+    "- written in Haskell, not yet very pretty\n",
+    "- you're invited to improve this thing: https://github.com/heyLu/expandr\n",
+    "\n",
+    "love,\n lu"
+    ]
+
 server :: IO Application
 server = scottyApp $ do
     cacheRef <- liftIO $ newIORef M.empty
@@ -23,3 +39,5 @@ server = scottyApp $ do
             putStrLn $ "cache insert: " ++ show (url, unshortened)
             modifyIORef cacheRef (M.insert url unshortened)
         text $ T.pack unshortened
+    get "/help" $ do
+        text $ help
