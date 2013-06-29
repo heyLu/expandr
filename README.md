@@ -4,6 +4,12 @@ expandr is a tiny web service that expands shortened urls into their
 actual form. It's for people who like to see where the links they click
 on go.
 
+**Important:** This project is not yet ready for world domination. If
+you'd like to use a real version of this thing, use [one](http://longurl.com)
+[of](http://urlex.org/) [the](http://checkshorturl.com/)
+[existing](http://www.wheredoesthislinkgo.com/)
+[ones](http://expandurl.appspot.com/).
+
 ## Quickstart
 
 It's written in Haskell, so you need the Haskell Platform installed.
