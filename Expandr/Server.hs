@@ -45,16 +45,19 @@ instance ToJSON ExpandedResult where
             "expandedUrl" .= url] ++
             map (\(k,v) -> TS.pack k .= v) (M.toList more)
 
+getUnshortened' cacheRef url = do
+    cache <- liftIO $ readIORef cacheRef
+    unshortened <- liftIO $ getCachedUnshortened cache url 5
+    when (isShortened url && (not $ M.member url cache)) $ liftIO $ do
+        putStrLn $ "cache insert: " ++ show (url, unshortened)
+        modifyIORef cacheRef (M.insert url unshortened)
+    return unshortened
+
 server :: IO Application
 server = scottyApp $ do
     cacheRef <- liftIO $ newIORef M.empty
     get "/" $ do
-        cache <- liftIO $ readIORef cacheRef
         url <- param "url"
-        unshortened <- liftIO $ getCachedUnshortened cache url 5
-        when (isShortened url && (not $ M.member url cache)) $ liftIO $ do
-            putStrLn $ "cache insert: " ++ show (url, unshortened)
-            modifyIORef cacheRef (M.insert url unshortened)
-        text $ T.pack unshortened
+        text . T.pack =<< getUnshortened' cacheRef url
     get "/help" $ do
         text $ help
