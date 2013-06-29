@@ -1,3 +1,4 @@
+-- | Very simple cache. Provides cached expandr'ization and can load/save it.
 module Expandr.Cache where
 
 import qualified Data.Map as M

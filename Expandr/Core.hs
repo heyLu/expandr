@@ -1,3 +1,4 @@
+-- | Core functionality. Knows what is shortened and how to expand.
 module Expandr.Core where
 
 import Network.URI

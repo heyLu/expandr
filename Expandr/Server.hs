@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+-- | Server component. A simple scotty app that uses core and cache.
 module Expandr.Server where
 
 import Web.Scotty
