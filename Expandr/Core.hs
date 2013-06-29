@@ -1,4 +1,4 @@
-module Expandr where
+module Expandr.Core where
 
 import Network.URI
 import Network.HTTP
