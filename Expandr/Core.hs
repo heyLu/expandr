@@ -5,6 +5,7 @@ import Network.URI
 import Network.HTTP
 import Data.Maybe (isJust, fromJust)
 
+shorteners :: [String]
 shorteners = ["t.co", "bit.ly", "fb.me"]
 
 isShortened' :: URI -> Bool
@@ -12,6 +13,7 @@ isShortened' uri = maybe False id $ do
     domain <- fmap uriRegName $ uriAuthority uri
     return $ domain `elem` shorteners
 
+fromMaybe :: Maybe Bool -> Bool
 fromMaybe = maybe False id
 
 isShortened :: String -> Bool
@@ -20,6 +22,7 @@ isShortened url = fromMaybe $ parseURI url >>= return . isShortened'
 location :: Response a -> Maybe String
 location res = lookupHeader HdrLocation . getHeaders $ res
 
+getUnshortened :: String -> Int -> IO String
 getUnshortened url maxRedirect = do
     if isShortened url && maxRedirect > 0
     then do

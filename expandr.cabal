@@ -1,0 +1,27 @@
+name:             cabal
+version:          0.1.0
+build-type:       Simple
+cabal-version:    >= 1.8
+
+executable expandr
+  ghc-options:
+      -Wall
+  extensions:
+      DoAndIfThenElse
+  hs-source-dirs:
+      .
+  main-is:
+      Main.hs
+  build-depends:
+      base    == 4.*
+    , transformers
+    , text
+    , containers
+    , bytestring
+    , directory
+    , network
+    , HTTP
+    , aeson
+    , scotty
+    , wai
+    , warp

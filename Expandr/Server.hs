@@ -13,6 +13,7 @@ import qualified Data.Text.Lazy as T
 import Expandr.Core (isShortened)
 import Expandr.Cache (getCachedUnshortened)
 
+help :: T.Text
 help = T.concat [
     "expandr - expandr'ing for great good!",
     "\n\n",

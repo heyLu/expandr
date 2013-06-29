@@ -12,13 +12,17 @@ you'd like to use a real version of this thing, use [one](http://longurl.com)
 
 ## Quickstart
 
+    # You need the Haskell Platform for this
+    $ cabal build
+    $ ./dist/build/expandr/expandr
+    # Visit 0.0.0.0:3000/help
+
 It's written in Haskell, so you need the Haskell Platform installed.
 Additionally you need the `scotty` and `aeson` packages. I'll try to
 cabalize this package soon so watch out for that.
 
 ## ToDo
 
-* cabalization
 * testing (functional, performance)
 * deploy this somewhere
 

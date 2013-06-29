@@ -6,6 +6,7 @@ import Text.Read (readMaybe)
 
 import Expandr.Server (server)
 
+main :: IO ()
 main = do
     args <- getArgs
     let port = if length args >= 1
