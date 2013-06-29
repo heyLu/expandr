@@ -1,4 +1,6 @@
-expandr:
+SOURCES=$(shell find . -type f -name '*.hs')
+
+expandr: ${SOURCES}
 	ghc Main.hs -o expandr
 
 run: expandr
