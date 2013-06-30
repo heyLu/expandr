@@ -55,9 +55,8 @@ getUnshortened' cacheRef url = do
         modifyIORef cacheRef (M.insert url unshortened)
     return unshortened
 
-server :: IO Application
-server = scottyApp $ do
-    cacheRef <- liftIO $ newIORef M.empty
+server :: IORef (M.Map String String) -> IO Application
+server cacheRef = scottyApp $ do
     get "/" $ do
         url <- param "url"
         unshortened <- getUnshortened' cacheRef url
