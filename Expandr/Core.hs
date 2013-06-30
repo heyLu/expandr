@@ -23,13 +23,19 @@ location :: Response a -> Maybe String
 location res = lookupHeader HdrLocation . getHeaders $ res
 
 getUnshortened :: String -> Int -> IO String
-getUnshortened url maxRedirect = do
+getUnshortened url maxRedirect = getUnshortened' url maxRedirect getUnshortened1
+
+getUnshortened' :: String -> Int -> (String -> IO String) -> IO String
+getUnshortened' url maxRedirect unshorten = do
     if isShortened url && maxRedirect > 0
     then do
-        res <- simpleHTTP $ getRequest url
-        let loc = fmap location res
-        let loc' = either (Just . const url) id loc
-        if maxRedirect > 0 && isJust loc'
-        then getUnshortened (fromJust loc') (maxRedirect - 1)
-        else return $ maybe url id loc'
+        unshortened <- unshorten url
+        if maxRedirect > 0
+        then getUnshortened' unshortened (maxRedirect - 1) unshorten
+        else return url
     else return url
+
+getUnshortened1 :: String -> IO String
+getUnshortened1 url = do
+    res <- simpleHTTP $ getRequest url
+    return $ maybe url id $ either (Just . const url) id $ fmap location res
