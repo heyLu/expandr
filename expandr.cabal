@@ -23,6 +23,6 @@ executable expandr
     , network-uri
     , HTTP
     , aeson
-    , scotty
+    , scotty == 0.9.*
     , wai
     , warp
