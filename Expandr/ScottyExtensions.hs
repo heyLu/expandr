@@ -3,6 +3,7 @@ module Expandr.ScottyExtensions where
 
 import Web.Scotty
 import qualified Data.Text.Lazy as T
+import Data.Maybe (fromMaybe)
 
 safe :: ActionM a -> ActionM (Maybe a)
 safe action = (action >>= return . Just) `rescue` \_ -> return Nothing
@@ -13,14 +14,11 @@ safe' whenNothing action = safe action >>= return . maybe whenNothing id
 param' :: (Parsable a) => T.Text -> ActionM (Maybe a)
 param' = safe . param
 
-reqHeader' :: T.Text -> ActionM (Maybe T.Text)
-reqHeader' = safe . reqHeader
-
 data ContentType = JSON | HTML | Plain
 
 negotiate :: (ContentType -> ActionM a) -> ActionM a
 negotiate f = do
-  accept <- safe' "text/html" $ reqHeader "Accept"
+  accept <- fmap (fromMaybe "text/html") $ header "Accept"
   let contentType = case accept of
         "application/json" -> JSON
         "text/plain" -> Plain

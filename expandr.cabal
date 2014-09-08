@@ -20,6 +20,7 @@ executable expandr
     , bytestring
     , directory
     , network
+    , network-uri
     , HTTP
     , aeson
     , scotty

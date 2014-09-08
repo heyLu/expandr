@@ -4,7 +4,7 @@ import Network.Wai.Handler.Warp (run)
 import System.Environment (getArgs)
 import Text.Read (readMaybe)
 import Control.Monad (forever)
-import Data.Map (empty, size)
+import Data.Map (size)
 import Data.IORef (newIORef, readIORef)
 import Control.Concurrent (forkIO, threadDelay)
 
@@ -21,7 +21,7 @@ main = do
     cacheRef <- newIORef =<< loadCache "expandr.cache.json"
     cache <- readIORef cacheRef
     putStrLn $ show (size cache) ++ " entries cached."
-    forkIO . forever $ do
+    _ <- forkIO . forever $ do
         threadDelay (30 * 1000 * 1000)
         putStrLn "persisting cache to disk"
         readIORef cacheRef >>= saveCache "expandr.cache.json"

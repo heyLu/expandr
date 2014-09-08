@@ -3,7 +3,6 @@ module Expandr.Core where
 
 import Network.URI
 import Network.HTTP
-import Data.Maybe (isJust, fromJust)
 
 shorteners :: [String]
 shorteners = ["t.co", "bit.ly", "fb.me"]
