@@ -60,6 +60,7 @@ server cacheRef = scottyApp $ do
     get "/" $ do
         url <- param "url"
         unshortened <- getUnshortened' cacheRef url
+        setHeader "Access-Control-Allow-Origin" "*"
         negotiate $ \t -> case t of
             JSON -> json $ ExpandedResult url unshortened M.empty
             _ -> redirect . T.pack $ unshortened
