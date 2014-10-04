@@ -62,6 +62,6 @@ server cacheRef = scottyApp $ do
         unshortened <- getUnshortened' cacheRef url
         negotiate $ \t -> case t of
             JSON -> json $ ExpandedResult url unshortened M.empty
-            _ -> text . T.pack $ unshortened
+            _ -> redirect . T.pack $ unshortened
     get "/help" $ do
         text $ help
