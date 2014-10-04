@@ -12,6 +12,11 @@ you'd like to use a real version of this thing, use [one](http://longurl.com)
 
 ## Quickstart
 
+If you have docker, run `docker run -it --rm -p 3000:3000 wunderseltsam/expandr`
+and have a look at <http://localhost:3000/help>.
+
+Otherwise, you'll have to build it yourself:
+
     # You need the Haskell Platform for this
     $ cabal build
     $ ./dist/build/expandr/expandr
