@@ -1,0 +1,11 @@
+*.o
+*.hi
+*.json
+
+.git
+
+.cabal-sandbox
+cabal.sandbox.config
+
+dist
+expandr
