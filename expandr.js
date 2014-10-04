@@ -23,7 +23,11 @@ document.addEventListener("mouseover", function(ev) {
     xhr.onload = function() {
       var expanded = JSON.parse(xhr.response);
       console.log('expandr: ' + expanded.originalUrl + ' -> ' + expanded.expandedUrl);
+      if (ev.target.textContent == ev.target.href) {
+        ev.target.textContent = expanded.expandedUrl;
+      }
       ev.target.href = expanded.expandedUrl;
+      ev.target.title = expanded.expandedUrl;
     }
     xhr.onerror = console.error.bind(console);
     xhr.send();
